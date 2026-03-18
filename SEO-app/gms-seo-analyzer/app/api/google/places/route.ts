@@ -8,8 +8,8 @@ export async function POST(req: NextRequest) {
 
         if (!PLACES_API_KEY) {
             return NextResponse.json(
-                { success: false, error: 'Google API key not configured. Add GOOGLE_API_KEY to your .env.local' },
-                { status: 400 }
+                { success: false, error: 'Google API key not configured. Add GOOGLE_API_KEY to your environment variables in the Vercel dashboard.' },
+                { status: 503 }
             );
         }
 

@@ -390,7 +390,8 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Search failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Search failed. Please try again.';
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const message = (err as any)?.response?.data?.error || (err instanceof Error ? err.message : 'Search failed. Please try again.');
             setLocalBusinessError(message);
             setModulesStatus((prev) => ({ ...prev, 'local-business': 'error' }));
         }
