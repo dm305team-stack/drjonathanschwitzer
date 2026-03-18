@@ -3,6 +3,20 @@ import { analyzePage } from '@/lib/brightdata';
 
 export async function POST(request: NextRequest) {
     try {
+        // Verify at least one Bright Data browser endpoint is configured
+        const hasBrowserCredentials =
+            !!process.env.BRIGHTDATA_SCRAPING_BROWSER_WSS ||
+            !!process.env.BRIGHTDATA_BROWSER_WSS;
+        if (!hasBrowserCredentials) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: 'Browser API not configured. Add BRIGHTDATA_SCRAPING_BROWSER_WSS (or BRIGHTDATA_BROWSER_WSS) to your environment variables in the Vercel dashboard.',
+                },
+                { status: 503 }
+            );
+        }
+
         const body = await request.json();
         const { url, country, city, device } = body;
 

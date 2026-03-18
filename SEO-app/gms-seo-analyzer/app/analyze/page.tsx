@@ -108,7 +108,10 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Analysis failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Analysis failed. Please try again.';
+            // Extract server-side error message from axios response body when available
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const axiosError = err as any;
+            const message = axiosError?.response?.data?.error || (err instanceof Error ? err.message : 'Analysis failed. Please try again.');
             setBrowserError(message);
             setModulesStatus((prev) => ({ ...prev, 'browser-api': 'error' }));
         }
@@ -145,7 +148,8 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Search failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Search failed. Please try again.';
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const message = (err as any)?.response?.data?.error || (err instanceof Error ? err.message : 'Search failed. Please try again.');
             setSerpError(message);
             setModulesStatus((prev) => ({ ...prev, 'serp-api': 'error' }));
         }
@@ -170,7 +174,8 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Unlock failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Unlock failed. Please try again.';
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const message = (err as any)?.response?.data?.error || (err instanceof Error ? err.message : 'Unlock failed. Please try again.');
             setUnlockerError(message);
             setModulesStatus((prev) => ({ ...prev, 'unlocker-api': 'error' }));
         }
@@ -198,7 +203,8 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Crawl trigger failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Crawl trigger failed. Please try again.';
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const message = (err as any)?.response?.data?.error || (err instanceof Error ? err.message : 'Crawl trigger failed. Please try again.');
             setCrawlError(message);
             setModulesStatus((prev) => ({ ...prev, 'crawl-api': 'error' }));
         }
@@ -244,7 +250,8 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Scrape failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Scrape failed.';
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const message = (err as any)?.response?.data?.error || (err instanceof Error ? err.message : 'Scrape failed.');
             setScraperError(message);
             setModulesStatus((prev) => ({ ...prev, 'web-scraper-api': 'error' }));
         }
@@ -278,7 +285,8 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Preview failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Preview failed.';
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const message = (err as any)?.response?.data?.error || (err instanceof Error ? err.message : 'Preview failed.');
             setDeepLookupError(message);
             setModulesStatus((prev) => ({ ...prev, 'deep-lookup': 'error' }));
         }
@@ -306,7 +314,8 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Request failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Request failed.';
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const message = (err as any)?.response?.data?.error || (err instanceof Error ? err.message : 'Request failed.');
             setDeepLookupError(message);
             setModulesStatus((prev) => ({ ...prev, 'deep-lookup': 'error' }));
         }
@@ -348,7 +357,8 @@ function AnalyzeContent() {
                 throw new Error(res.data.error || 'Search failed');
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Search failed.';
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const message = (err as any)?.response?.data?.error || (err instanceof Error ? err.message : 'Search failed.');
             setArchiveError(message);
             setModulesStatus((prev) => ({ ...prev, 'web-archive': 'error' }));
         }
