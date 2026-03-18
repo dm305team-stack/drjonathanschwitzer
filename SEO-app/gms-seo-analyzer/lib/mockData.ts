@@ -99,16 +99,42 @@ export function getMockDomainAnalyticsData(domain: string): DomainAnalyticsData 
     };
 }
 
+/**
+ * Generate plausible-looking competitor domains derived from the target domain.
+ * Uses the domain name + common industry TLD patterns so results look realistic.
+ */
+function deriveCompetitorDomains(domain: string, seed: number): string[] {
+    const name = domain.split('.')[0].toLowerCase();
+    const tld = domain.includes('.') ? domain.split('.').slice(1).join('.') : 'com';
+
+    // Pools of suffixes/prefixes that look like real SaaS / brand competitors
+    const suffixPool = ['hub', 'pro', 'hq', 'app', 'io', 'ly', 'ify', 'base', 'desk', 'suite', 'lab', 'ai'];
+    const prefixPool = ['get', 'try', 'use', 'go', 'my', 'the', 'one', 'all', 'team'];
+    const altTldPool = ['io', 'co', 'app', 'ai', 'dev', 'net', 'org', 'com'];
+
+    // Deterministically pick from pools using seed offsets
+    const pick = <T>(arr: T[], offset: number): T => arr[Math.abs(Math.round(seed * 1000 + offset)) % arr.length];
+
+    return [
+        `${name}${pick(suffixPool, 0)}.${tld}`,
+        `${pick(prefixPool, 1)}${name}.${tld}`,
+        `${name}${pick(suffixPool, 2)}.${pick(altTldPool, 3)}`,
+        `${pick(prefixPool, 4)}${name}${pick(suffixPool, 5)}.${tld}`,
+        `${name}-${pick(suffixPool, 6)}.${pick(altTldPool, 7)}`,
+    ];
+}
+
 export function getMockLabsData(domain: string): LabsData {
     const s = hashDomain(domain);
+    const competitorDomains = deriveCompetitorDomains(domain, s);
     return {
         estimatedTraffic: vary(156420, s),
         competitors: [
-            { domain: 'competitor-one.com', organicTraffic: vary(234500, s), organicKeywords: vary(5200, s), rank: Math.round(60 + s * 20), commonKeywords: vary(1200, s) },
-            { domain: 'competitor-two.com', organicTraffic: vary(189300, s), organicKeywords: vary(4100, s), rank: Math.round(50 + s * 25), commonKeywords: vary(980, s) },
-            { domain: 'competitor-three.com', organicTraffic: vary(145600, s), organicKeywords: vary(3800, s), rank: Math.round(45 + s * 25), commonKeywords: vary(750, s) },
-            { domain: 'rival-brand.com', organicTraffic: vary(98700, s), organicKeywords: vary(2900, s), rank: Math.round(40 + s * 25), commonKeywords: vary(520, s) },
-            { domain: 'industry-leader.com', organicTraffic: vary(312000, s), organicKeywords: vary(8400, s), rank: Math.round(70 + s * 20), commonKeywords: vary(1800, s) },
+            { domain: competitorDomains[0], organicTraffic: vary(234500, s), organicKeywords: vary(5200, s), rank: Math.round(60 + s * 20), commonKeywords: vary(1200, s) },
+            { domain: competitorDomains[1], organicTraffic: vary(189300, s), organicKeywords: vary(4100, s), rank: Math.round(50 + s * 25), commonKeywords: vary(980, s) },
+            { domain: competitorDomains[2], organicTraffic: vary(145600, s), organicKeywords: vary(3800, s), rank: Math.round(45 + s * 25), commonKeywords: vary(750, s) },
+            { domain: competitorDomains[3], organicTraffic: vary(98700, s), organicKeywords: vary(2900, s), rank: Math.round(40 + s * 25), commonKeywords: vary(520, s) },
+            { domain: competitorDomains[4], organicTraffic: vary(312000, s), organicKeywords: vary(8400, s), rank: Math.round(70 + s * 20), commonKeywords: vary(1800, s) },
         ],
     };
 }
